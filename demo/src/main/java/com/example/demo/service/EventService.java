@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -41,18 +42,33 @@ public class EventService {
     public Object list (int page, int size){
         return eventRepository.findAll(PageRequest.of(page, size));
     }
-    public TicketDto book(Long userId, Long eventId){
+    public Event getById(Long id){
+        return eventRepository.findById(id).orElseThrow(() -> new RuntimeException());
+    }
+    public TicketDto book(Long eventId, Long userId) throws Exception {
         Ticket ticket= new Ticket();
         Event event = new Event();
-        if(eventRepository.existsById(eventId)){
+        if(eventRepository.existsById(eventId)==true){
             ticket.setEventId(eventId);
             ticket.setUserId(userId);
-
+            Event e= getById(eventId);
+            if(e.getAvailableSeats()>0) {
+                e.setAvailableSeats(e.getAvailableSeats() - 1);
+            }else{
+                throw  new Exception("Event not available");
+            }
         }else{
             throw  new IllegalArgumentException("Event not founded");
         }
         Ticket ticketAdded = ticketRepository.save(ticket);
         return new TicketDto(ticketAdded.getId(),ticketAdded.getEventId(),ticketAdded.getUserId());
+    }
+
+    public Ticket getTicketById(Long id){
+        return ticketRepository.findById(id).orElseThrow(() -> new RuntimeException());
+    }
+    public TicketDto cancel(Long ticketId){
+        return null;
     }
 
 
