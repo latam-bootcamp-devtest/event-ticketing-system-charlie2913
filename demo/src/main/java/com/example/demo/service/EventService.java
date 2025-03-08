@@ -48,7 +48,7 @@ public class EventService {
     public TicketDto book(Long eventId, Long userId) throws Exception {
         Ticket ticket= new Ticket();
         Event event = new Event();
-        if(eventRepository.existsById(eventId)==true){
+        if(eventRepository.existsById(eventId)){
             ticket.setEventId(eventId);
             ticket.setUserId(userId);
             Event e= getById(eventId);
@@ -67,9 +67,19 @@ public class EventService {
     public Ticket getTicketById(Long id){
         return ticketRepository.findById(id).orElseThrow(() -> new RuntimeException());
     }
-    public TicketDto cancel(Long ticketId){
-        return null;
+    public void cancel(Long id) throws Exception {
+        if(!eventRepository.existsById(id)){
+            throw new RuntimeException("Event not found");
+        }
+        Ticket t= getTicketById(id);
+        Event e= getById(t.getEventId());
+        if(e.getDate().isBefore(LocalDate.now())){
+            throw new Exception("Cannot cancel past events");
+        }
+        e.setAvailableSeats(e.getAvailableSeats() + 1);
+        ticketRepository.deleteById(id);
     }
+
 
 
 }
