@@ -25,6 +25,14 @@ public class Event {
     }
     public void setEventId(Long eventId){this.eventId=eventId;}
 
+    public String getName(){return name;};
+    public void setName(String name){this.name= name;}
+    public LocalDate getDate(){return date;}
+    public void setDate(LocalDate date){this.date=date;}
+
+    public Long getAvailableSeats() {return availableSeats; }
+
+    public void setAvailableSeats(Long availableSeats) {this.availableSeats=availableSeats;}
 }
 
 
