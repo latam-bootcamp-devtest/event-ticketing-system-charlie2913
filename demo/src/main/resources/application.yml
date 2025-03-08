@@ -1,0 +1,16 @@
+server:
+  port: 1234
+accounting:
+  url:${URL:jdbc:postgresql://localhost:5439/postgres}
+  key:${PASSWORD:pass123}
+spring:
+  datasource:
+    type: org.postgresql.jdbc2.optional.SimpleDataSource
+    username: ${USER_NAME:postgres}
+    password: ${PASSWORD:pass123}
+    url: ${URL:jdbc:postgresql://localhost:5439/postgres}
+  config:
+    import: optional:file:.env[.properties]
+  jpa:
+    hibernate:
+      ddl-auto: update
